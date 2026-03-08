@@ -41,6 +41,12 @@ const App = () => (
             <Route path="/rta" element={<RTA />} />
             <Route path="/denials" element={<Denials />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/workloads" element={<Workloads />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/payment-posting" element={<PaymentPosting />} />
+            <Route path="/payer-contracts" element={<PayerContracts />} />
+            <Route path="/charge-capture" element={<ChargeCapture />} />
+            <Route path="/patient-financial" element={<PatientFinancial />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
