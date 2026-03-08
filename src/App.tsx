@@ -15,6 +15,12 @@ import Scrubbing from "./pages/Scrubbing";
 import RTA from "./pages/RTA";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Workloads from "./pages/Workloads";
+import Reports from "./pages/Reports";
+import PaymentPosting from "./pages/PaymentPosting";
+import PayerContracts from "./pages/PayerContracts";
+import ChargeCapture from "./pages/ChargeCapture";
+import PatientFinancial from "./pages/PatientFinancial";
 
 const queryClient = new QueryClient();
 
