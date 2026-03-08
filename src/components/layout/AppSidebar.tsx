@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard, FileText, Users, ShieldAlert, BarChart3,
-  ChevronLeft, ChevronRight, Activity, LogOut,
+  ChevronLeft, ChevronRight, Activity, LogOut, Shield, Package, Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,9 +10,12 @@ import { useAuth } from "@/hooks/useAuth";
 const navItems = [
   { path: "/", label: "Dashboard", icon: LayoutDashboard },
   { path: "/claims", label: "Claims", icon: FileText },
+  { path: "/patients", label: "Patient Access", icon: Users },
+  { path: "/scrubbing", label: "Scrubbing", icon: Shield },
+  { path: "/batches", label: "Batches", icon: Package },
+  { path: "/rta", label: "Real-Time Adj.", icon: Zap },
   { path: "/denials", label: "Denials", icon: ShieldAlert },
   { path: "/analytics", label: "Analytics", icon: BarChart3 },
-  { path: "/patients", label: "Patient Access", icon: Users, disabled: true, phase: 2 },
 ];
 
 export function AppSidebar() {
@@ -31,15 +34,6 @@ export function AppSidebar() {
         {navItems.map((item) => {
           const isActive = item.path === "/" ? location.pathname === "/" : location.pathname.startsWith(item.path);
           const Icon = item.icon;
-
-          if (item.disabled) {
-            return (
-              <div key={item.path} className="flex items-center gap-3 rounded-md px-3 py-2 text-sm opacity-40 cursor-not-allowed text-sidebar-foreground" title={`Phase ${item.phase}`}>
-                <Icon className="h-4 w-4 shrink-0" />
-                {!collapsed && <><span className="flex-1">{item.label}</span><span className="rounded bg-sidebar-accent px-1.5 py-0.5 text-[10px] font-medium text-sidebar-accent-foreground">P{item.phase}</span></>}
-              </div>
-            );
-          }
 
           return (
             <Link key={item.path} to={item.path} className={cn("flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors", isActive ? "bg-sidebar-accent text-sidebar-primary" : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground")}>
