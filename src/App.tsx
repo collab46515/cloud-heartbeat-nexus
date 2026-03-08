@@ -35,6 +35,8 @@ import DataResidency from "./pages/DataResidency";
 // Integration Hub
 import IntegrationHub from "./pages/IntegrationHub";
 import AnomalyDetection from "./pages/AnomalyDetection";
+import RevenueForecast from "./pages/RevenueForecast";
+import WorkflowOptimization from "./pages/WorkflowOptimization";
 
 const queryClient = new QueryClient();
 
