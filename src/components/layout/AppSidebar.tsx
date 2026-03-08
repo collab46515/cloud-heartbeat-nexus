@@ -3,6 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard, FileText, Users, ShieldAlert, BarChart3,
   ChevronLeft, ChevronRight, Activity, LogOut, Shield, Package, Zap,
+  Inbox, ClipboardList, DollarSign, Handshake, Receipt, Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
