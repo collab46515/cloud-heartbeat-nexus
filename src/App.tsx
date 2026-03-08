@@ -34,6 +34,7 @@ import ZeroTrustSecurity from "./pages/ZeroTrustSecurity";
 import DataResidency from "./pages/DataResidency";
 // Integration Hub
 import IntegrationHub from "./pages/IntegrationHub";
+import AnomalyDetection from "./pages/AnomalyDetection";
 
 const queryClient = new QueryClient();
 
