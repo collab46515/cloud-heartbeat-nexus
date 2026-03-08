@@ -40,6 +40,8 @@ const navSections = [
       { path: "/anomaly-detection", label: "Anomaly Detection", icon: Activity },
       { path: "/revenue-forecast", label: "Revenue Forecast", icon: TrendingUp },
       { path: "/workflow-optimization", label: "Workflow AI", icon: Brain },
+      { path: "/ai-operations", label: "AI Ops Center", icon: Gauge },
+      { path: "/ai-roi", label: "AI ROI", icon: PieChart },
       { path: "/compliance", label: "Compliance", icon: ShieldCheck },
     ],
   },

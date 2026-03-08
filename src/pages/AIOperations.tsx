@@ -17,7 +17,7 @@ export default function AIOperations() {
   const { data: feedback } = useAIFeedbackStats();
 
   return (
-    <PageWrapper title="AI Operations Center" subtitle="Monitor, diagnose, and optimize all AI capabilities in real-time">
+    <PageWrapper title="AI Operations Center" description="Monitor, diagnose, and optimize all AI capabilities in real-time">
       {/* Top KPIs */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5 mb-6">
         <Card>

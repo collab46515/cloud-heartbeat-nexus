@@ -164,7 +164,7 @@ export default function AIROIDashboard() {
   const totalValue = totalROI.revenueProtected + totalROI.revenueGenerated + totalROI.costSaved;
 
   return (
-    <PageWrapper title="AI ROI Dashboard" subtitle="Business value and return on investment across all AI capabilities">
+    <PageWrapper title="AI ROI Dashboard" description="Business value and return on investment across all AI capabilities">
       {/* Hero KPIs */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
         <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
