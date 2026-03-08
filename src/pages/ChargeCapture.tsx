@@ -31,8 +31,8 @@ function useEncounters() {
 function useCreateEncounter() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (enc: { patient_id: string; visit_type: string; admission_date: string; facility_name?: string; attending_provider_id?: string }) => {
-      const { error } = await supabase.from("encounters").insert(enc);
+    mutationFn: async (enc: { patient_id: string; visit_type: "inpatient" | "outpatient" | "ed" | "observation"; admission_date: string; facility_name?: string; attending_provider_id?: string }) => {
+      const { error } = await supabase.from("encounters").insert([enc]);
       if (error) throw error;
     },
     onSuccess: () => {
