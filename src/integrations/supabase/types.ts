@@ -262,6 +262,45 @@ export type Database = {
           },
         ]
       }
+      cci_edit_pairs: {
+        Row: {
+          code_1: string
+          code_2: string
+          created_at: string
+          edit_type: string
+          effective_date: string
+          end_date: string | null
+          id: string
+          is_active: boolean
+          modifier_allowed: boolean
+          modifier_indicators: string[]
+        }
+        Insert: {
+          code_1: string
+          code_2: string
+          created_at?: string
+          edit_type?: string
+          effective_date?: string
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          modifier_allowed?: boolean
+          modifier_indicators?: string[]
+        }
+        Update: {
+          code_1?: string
+          code_2?: string
+          created_at?: string
+          edit_type?: string
+          effective_date?: string
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          modifier_allowed?: boolean
+          modifier_indicators?: string[]
+        }
+        Relationships: []
+      }
       claim_attachments: {
         Row: {
           attachment_type: string
@@ -1138,6 +1177,78 @@ export type Database = {
           },
         ]
       }
+      mue_limits: {
+        Row: {
+          adjudication_indicator: string
+          created_at: string
+          effective_date: string
+          end_date: string | null
+          id: string
+          is_active: boolean
+          max_units: number
+          procedure_code: string
+        }
+        Insert: {
+          adjudication_indicator?: string
+          created_at?: string
+          effective_date?: string
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          max_units: number
+          procedure_code: string
+        }
+        Update: {
+          adjudication_indicator?: string
+          created_at?: string
+          effective_date?: string
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          max_units?: number
+          procedure_code?: string
+        }
+        Relationships: []
+      }
+      ncci_edit_pairs: {
+        Row: {
+          created_at: string
+          edit_reason: string | null
+          effective_date: string
+          end_date: string | null
+          id: string
+          is_active: boolean
+          modifier_allowed: boolean
+          modifier_indicators: string[]
+          primary_code: string
+          secondary_code: string
+        }
+        Insert: {
+          created_at?: string
+          edit_reason?: string | null
+          effective_date?: string
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          modifier_allowed?: boolean
+          modifier_indicators?: string[]
+          primary_code: string
+          secondary_code: string
+        }
+        Update: {
+          created_at?: string
+          edit_reason?: string | null
+          effective_date?: string
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          modifier_allowed?: boolean
+          modifier_indicators?: string[]
+          primary_code?: string
+          secondary_code?: string
+        }
+        Relationships: []
+      }
       patient_payment_plans: {
         Row: {
           auto_pay: boolean | null
@@ -1569,6 +1680,33 @@ export type Database = {
         }
         Relationships: []
       }
+      revenue_code_defaults: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          note: string | null
+          procedure_code: string
+          revenue_code: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          note?: string | null
+          procedure_code: string
+          revenue_code: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          note?: string | null
+          procedure_code?: string
+          revenue_code?: string
+        }
+        Relationships: []
+      }
       rta_transactions: {
         Row: {
           adjudication_id: string | null
@@ -1741,7 +1879,9 @@ export type Database = {
           auto_correct_action: Json | null
           category: string
           created_at: string
+          created_by: string | null
           description: string | null
+          governance_tags: string[]
           id: string
           is_active: boolean | null
           logic_expression: Json
@@ -1752,13 +1892,16 @@ export type Database = {
           rule_type: string
           severity: string
           updated_at: string
+          updated_by: string | null
         }
         Insert: {
           auto_correct?: boolean | null
           auto_correct_action?: Json | null
           category: string
           created_at?: string
+          created_by?: string | null
           description?: string | null
+          governance_tags?: string[]
           id?: string
           is_active?: boolean | null
           logic_expression?: Json
@@ -1769,13 +1912,16 @@ export type Database = {
           rule_type: string
           severity?: string
           updated_at?: string
+          updated_by?: string | null
         }
         Update: {
           auto_correct?: boolean | null
           auto_correct_action?: Json | null
           category?: string
           created_at?: string
+          created_by?: string | null
           description?: string | null
+          governance_tags?: string[]
           id?: string
           is_active?: boolean | null
           logic_expression?: Json
@@ -1786,6 +1932,7 @@ export type Database = {
           rule_type?: string
           severity?: string
           updated_at?: string
+          updated_by?: string | null
         }
         Relationships: [
           {
