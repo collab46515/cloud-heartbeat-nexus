@@ -7,9 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { formatCurrency, formatClaimStatus, getClaimStatusColor } from "@/data/mock-claims";
 import { useClaims, usePayers, type ClaimWithRelations } from "@/hooks/useClaims";
-import { Search, Filter, Eye, Loader2, Brain } from "lucide-react";
+import { useRunScrub } from "@/hooks/useScrubbing";
+import { Search, Filter, Eye, Loader2, Brain, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ClaimDetailPanel } from "./ClaimDetailPanel";
+import { toast } from "sonner";
 
 export function ClaimsTable() {
   const [search, setSearch] = useState("");
