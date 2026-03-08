@@ -1352,6 +1352,51 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          action_url: string | null
+          category: string
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          is_read: boolean
+          message: string
+          read_at: string | null
+          severity: string
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          action_url?: string | null
+          category?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          is_read?: boolean
+          message: string
+          read_at?: string | null
+          severity?: string
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          action_url?: string | null
+          category?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          is_read?: boolean
+          message?: string
+          read_at?: string | null
+          severity?: string
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       patient_payment_plans: {
         Row: {
           auto_pay: boolean | null
@@ -1490,6 +1535,50 @@ export type Database = {
             columns: ["payment_plan_id"]
             isOneToOne: false
             referencedRelation: "patient_payment_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_portal_messages: {
+        Row: {
+          created_at: string
+          direction: string
+          id: string
+          message: string
+          patient_id: string
+          replied_at: string | null
+          replied_by: string | null
+          status: string
+          subject: string
+        }
+        Insert: {
+          created_at?: string
+          direction?: string
+          id?: string
+          message: string
+          patient_id: string
+          replied_at?: string | null
+          replied_by?: string | null
+          status?: string
+          subject: string
+        }
+        Update: {
+          created_at?: string
+          direction?: string
+          id?: string
+          message?: string
+          patient_id?: string
+          replied_at?: string | null
+          replied_by?: string | null
+          status?: string
+          subject?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_portal_messages_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
             referencedColumns: ["id"]
           },
         ]
