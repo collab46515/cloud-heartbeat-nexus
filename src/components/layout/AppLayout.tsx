@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { AppSidebar } from "./AppSidebar";
 import { Bell, Search, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { RCMCopilot } from "@/components/ai/RCMCopilot";
 
 export function AppLayout() {
   return (
