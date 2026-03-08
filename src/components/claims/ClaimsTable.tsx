@@ -123,7 +123,7 @@ export function ClaimsTable() {
             ))}
             {claims.length === 0 && (
               <TableRow>
-                <TableCell colSpan={9} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={10} className="h-24 text-center text-muted-foreground">
                   No claims found. Seed data or create your first claim.
                 </TableCell>
               </TableRow>
