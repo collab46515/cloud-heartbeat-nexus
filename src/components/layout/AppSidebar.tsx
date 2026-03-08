@@ -62,6 +62,13 @@ const navSections = [
       { path: "/integrations", label: "Integrations", icon: Network },
       { path: "/analytics", label: "Analytics", icon: BarChart3 },
       { path: "/reports", label: "Reports", icon: ClipboardList },
+      { path: "/notifications", label: "Notifications", icon: BellRing },
+    ],
+  },
+  {
+    title: "Patient Portal",
+    items: [
+      { path: "/patient-portal", label: "Patient Portal", icon: UserCircle },
     ],
   },
 ];

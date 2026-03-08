@@ -1,8 +1,9 @@
 import { Outlet } from "react-router-dom";
 import { AppSidebar } from "./AppSidebar";
-import { Bell, Search, User } from "lucide-react";
+import { Search, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { RCMCopilot } from "@/components/ai/RCMCopilot";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 export function AppLayout() {
   return (
@@ -21,12 +22,7 @@ export function AppLayout() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative text-muted-foreground hover:text-foreground">
-              <Bell className="h-4 w-4" />
-              <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground">
-                3
-              </span>
-            </button>
+            <NotificationBell />
             <div className="flex items-center gap-2 text-sm">
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
                 <User className="h-3.5 w-3.5" />

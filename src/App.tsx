@@ -86,6 +86,9 @@ const App = () => (
             {/* AI Governance */}
             <Route path="/ai-operations" element={<AIOperations />} />
             <Route path="/ai-roi" element={<AIROIDashboard />} />
+            {/* Notification Center & Patient Portal */}
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/patient-portal" element={<PatientPortal />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
