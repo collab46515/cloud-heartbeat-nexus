@@ -132,111 +132,17 @@ export function ClaimsTable() {
         </Table>
       </div>
 
-      {/* Claim Detail Dialog */}
-      <Dialog open={!!selectedClaim} onOpenChange={(open) => !open && setSelectedClaim(null)}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+      {/* Claim Detail Sheet */}
+      <Sheet open={!!selectedClaim} onOpenChange={(open) => !open && setSelectedClaim(null)}>
+        <SheetContent className="w-full sm:max-w-xl overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle className="sr-only">Claim Details</SheetTitle>
+          </SheetHeader>
           {selectedClaim && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-3">
-                  <span className="font-mono">{selectedClaim.claim_number}</span>
-                  <Badge variant="outline" className={cn("text-[11px] font-semibold border", getClaimStatusColor(selectedClaim.claim_status))}>
-                    {formatClaimStatus(selectedClaim.claim_status)}
-                  </Badge>
-                </DialogTitle>
-                <DialogDescription>
-                  {selectedClaim.patients ? `${selectedClaim.patients.first_name} ${selectedClaim.patients.last_name}` : "Unknown"} · {selectedClaim.payers?.name} · {selectedClaim.claim_type}
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="grid gap-4 pt-2">
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="rounded-md border p-3">
-                    <p className="text-[10px] font-medium uppercase text-muted-foreground">Total Charges</p>
-                    <p className="text-lg font-bold">{formatCurrency(Number(selectedClaim.total_charge_amount))}</p>
-                  </div>
-                  <div className="rounded-md border p-3">
-                    <p className="text-[10px] font-medium uppercase text-muted-foreground">Total Paid</p>
-                    <p className="text-lg font-bold text-success">{formatCurrency(Number(selectedClaim.total_paid_amount))}</p>
-                  </div>
-                  <div className="rounded-md border p-3">
-                    <p className="text-[10px] font-medium uppercase text-muted-foreground">Patient Resp.</p>
-                    <p className="text-lg font-bold">{formatCurrency(Number(selectedClaim.patient_responsibility))}</p>
-                  </div>
-                </div>
-
-                {selectedClaim.denial_reason_code && (
-                  <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3">
-                    <p className="text-xs font-semibold text-destructive">Denial: {selectedClaim.denial_reason_code}</p>
-                    <p className="mt-0.5 text-sm text-foreground">{selectedClaim.denial_reason_description}</p>
-                  </div>
-                )}
-
-                {/* Diagnoses from JSONB */}
-                {selectedClaim.diagnoses && Array.isArray(selectedClaim.diagnoses) && (selectedClaim.diagnoses as any[]).length > 0 && (
-                  <div>
-                    <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Diagnoses</h4>
-                    <div className="space-y-1">
-                      {(selectedClaim.diagnoses as any[]).map((dx: any, i: number) => (
-                        <div key={i} className="flex items-center gap-2 text-sm">
-                          <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs font-medium">{dx.code}</span>
-                          <span>{dx.description}</span>
-                          {dx.rank && <Badge variant="outline" className="text-[10px]">{dx.rank}</Badge>}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Line Items */}
-                {selectedClaim.claim_line_items?.length > 0 && (
-                  <div>
-                    <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Line Items</h4>
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="bg-muted/30">
-                          <TableHead className="text-xs">CPT</TableHead>
-                          <TableHead className="text-xs">Description</TableHead>
-                          <TableHead className="text-xs text-right">Units</TableHead>
-                          <TableHead className="text-xs text-right">Amount</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {selectedClaim.claim_line_items.map((li) => (
-                          <TableRow key={li.id}>
-                            <TableCell className="font-mono text-xs">{li.procedure_code}</TableCell>
-                            <TableCell className="text-sm">{li.procedure_description}</TableCell>
-                            <TableCell className="text-right text-sm">{li.units}</TableCell>
-                            <TableCell className="text-right font-mono text-sm">{formatCurrency(Number(li.charge_amount))}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Provider: </span>
-                    <span className="font-medium">
-                      {selectedClaim.providers ? `Dr. ${selectedClaim.providers.first_name} ${selectedClaim.providers.last_name}` : "—"}
-                    </span>
-                  </div>
-                  <div><span className="text-muted-foreground">Facility: </span><span className="font-medium">{selectedClaim.facility_name || "—"}</span></div>
-                  <div><span className="text-muted-foreground">Service Date: </span><span className="font-medium">{selectedClaim.service_date}</span></div>
-                  <div><span className="text-muted-foreground">Submitted: </span><span className="font-medium">{selectedClaim.submission_date || "Not submitted"}</span></div>
-                  {selectedClaim.days_in_ar > 0 && (
-                    <div>
-                      <span className="text-muted-foreground">Days in A/R: </span>
-                      <span className={cn("font-medium", selectedClaim.days_in_ar > 45 ? "text-destructive" : "")}>{selectedClaim.days_in_ar}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
+            <ClaimDetailPanel claim={selectedClaim} onClose={() => setSelectedClaim(null)} />
           )}
-        </DialogContent>
-      </Dialog>
+        </SheetContent>
+      </Sheet>
     </>
   );
 }
