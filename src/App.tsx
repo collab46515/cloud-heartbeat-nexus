@@ -21,6 +21,19 @@ import PaymentPosting from "./pages/PaymentPosting";
 import PayerContracts from "./pages/PayerContracts";
 import ChargeCapture from "./pages/ChargeCapture";
 import PatientFinancial from "./pages/PatientFinancial";
+// New Intelligence Layer
+import RevenueIntelligence from "./pages/RevenueIntelligence";
+import Compliance from "./pages/Compliance";
+import ExceptionTriage from "./pages/ExceptionTriage";
+// New Autonomous Layer
+import TouchlessProcessing from "./pages/TouchlessProcessing";
+import SelfHealing from "./pages/SelfHealing";
+// New Security Layer
+import BehavioralBiometrics from "./pages/BehavioralBiometrics";
+import ZeroTrustSecurity from "./pages/ZeroTrustSecurity";
+import DataResidency from "./pages/DataResidency";
+// Integration Hub
+import IntegrationHub from "./pages/IntegrationHub";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +60,19 @@ const App = () => (
             <Route path="/payer-contracts" element={<PayerContracts />} />
             <Route path="/charge-capture" element={<ChargeCapture />} />
             <Route path="/patient-financial" element={<PatientFinancial />} />
+            {/* Intelligence Layer */}
+            <Route path="/revenue-intelligence" element={<RevenueIntelligence />} />
+            <Route path="/compliance" element={<Compliance />} />
+            <Route path="/exception-triage" element={<ExceptionTriage />} />
+            {/* Autonomous Layer */}
+            <Route path="/touchless-processing" element={<TouchlessProcessing />} />
+            <Route path="/self-healing" element={<SelfHealing />} />
+            {/* Security Layer */}
+            <Route path="/behavioral-biometrics" element={<BehavioralBiometrics />} />
+            <Route path="/zero-trust" element={<ZeroTrustSecurity />} />
+            <Route path="/data-residency" element={<DataResidency />} />
+            {/* Integration Hub */}
+            <Route path="/integrations" element={<IntegrationHub />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
