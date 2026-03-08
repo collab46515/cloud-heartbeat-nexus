@@ -5,6 +5,7 @@ import {
   ChevronLeft, ChevronRight, Activity, LogOut, Shield, Package, Zap,
   Inbox, ClipboardList, DollarSign, Handshake, Receipt, Wallet,
   TrendingUp, ShieldCheck, Brain, Cog, Wrench, Fingerprint, Lock, Globe, Network,
+  Gauge, PieChart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
