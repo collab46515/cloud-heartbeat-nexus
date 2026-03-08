@@ -47,6 +47,99 @@ export type Database = {
         }
         Relationships: []
       }
+      automation_executions: {
+        Row: {
+          claim_id: string | null
+          created_at: string
+          error_message: string | null
+          execution_time_ms: number | null
+          id: string
+          input_data: Json | null
+          output_data: Json | null
+          rule_id: string | null
+          status: string
+        }
+        Insert: {
+          claim_id?: string | null
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          input_data?: Json | null
+          output_data?: Json | null
+          rule_id?: string | null
+          status?: string
+        }
+        Update: {
+          claim_id?: string | null
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          input_data?: Json | null
+          output_data?: Json | null
+          rule_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_executions_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "claims"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automation_executions_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "automation_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_rules: {
+        Row: {
+          action_config: Json
+          created_at: string
+          failure_count: number | null
+          id: string
+          is_active: boolean | null
+          last_executed_at: string | null
+          rule_name: string
+          rule_type: string
+          success_count: number | null
+          trigger_condition: Json
+          updated_at: string
+        }
+        Insert: {
+          action_config?: Json
+          created_at?: string
+          failure_count?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_executed_at?: string | null
+          rule_name: string
+          rule_type: string
+          success_count?: number | null
+          trigger_condition?: Json
+          updated_at?: string
+        }
+        Update: {
+          action_config?: Json
+          created_at?: string
+          failure_count?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_executed_at?: string | null
+          rule_name?: string
+          rule_type?: string
+          success_count?: number | null
+          trigger_condition?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       batch_claim_items: {
         Row: {
           batch_id: string
@@ -555,6 +648,51 @@ export type Database = {
           },
         ]
       }
+      compliance_checks: {
+        Row: {
+          check_name: string
+          check_type: string
+          checked_at: string
+          details: Json | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          remediation: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string | null
+          status: string
+        }
+        Insert: {
+          check_name: string
+          check_type: string
+          checked_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          remediation?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string | null
+          status?: string
+        }
+        Update: {
+          check_name?: string
+          check_type?: string
+          checked_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          remediation?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       credit_balances: {
         Row: {
           amount: number
@@ -645,6 +783,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      data_residency_configs: {
+        Row: {
+          country_code: string
+          created_at: string
+          data_types: string[] | null
+          encryption_standard: string | null
+          id: string
+          is_primary: boolean | null
+          region_code: string
+          region_name: string
+          regulation: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          country_code: string
+          created_at?: string
+          data_types?: string[] | null
+          encryption_standard?: string | null
+          id?: string
+          is_primary?: boolean | null
+          region_code: string
+          region_name: string
+          regulation?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          country_code?: string
+          created_at?: string
+          data_types?: string[] | null
+          encryption_standard?: string | null
+          id?: string
+          is_primary?: boolean | null
+          region_code?: string
+          region_name?: string
+          regulation?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       denial_workflows: {
         Row: {
@@ -844,6 +1024,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      integration_configs: {
+        Row: {
+          connection_method: string | null
+          created_at: string
+          endpoint_url: string | null
+          id: string
+          integration_name: string
+          integration_type: string
+          is_active: boolean | null
+          last_error: string | null
+          last_sync_at: string | null
+          records_synced: number | null
+          status: string
+          sync_frequency: string | null
+          updated_at: string
+          vendor: string | null
+        }
+        Insert: {
+          connection_method?: string | null
+          created_at?: string
+          endpoint_url?: string | null
+          id?: string
+          integration_name: string
+          integration_type: string
+          is_active?: boolean | null
+          last_error?: string | null
+          last_sync_at?: string | null
+          records_synced?: number | null
+          status?: string
+          sync_frequency?: string | null
+          updated_at?: string
+          vendor?: string | null
+        }
+        Update: {
+          connection_method?: string | null
+          created_at?: string
+          endpoint_url?: string | null
+          id?: string
+          integration_name?: string
+          integration_type?: string
+          is_active?: boolean | null
+          last_error?: string | null
+          last_sync_at?: string | null
+          records_synced?: number | null
+          status?: string
+          sync_frequency?: string | null
+          updated_at?: string
+          vendor?: string | null
+        }
+        Relationships: []
       }
       ml_predictions: {
         Row: {
@@ -1562,6 +1793,92 @@ export type Database = {
             columns: ["payer_id"]
             isOneToOne: false
             referencedRelation: "payers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          geo_location: Json | null
+          id: string
+          ip_address: string | null
+          is_anomalous: boolean | null
+          metadata: Json | null
+          risk_score: number | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          geo_location?: Json | null
+          id?: string
+          ip_address?: string | null
+          is_anomalous?: boolean | null
+          metadata?: Json | null
+          risk_score?: number | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          geo_location?: Json | null
+          id?: string
+          ip_address?: string | null
+          is_anomalous?: boolean | null
+          metadata?: Json | null
+          risk_score?: number | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      stp_pipeline_runs: {
+        Row: {
+          auto_actions_taken: Json | null
+          claim_id: string | null
+          completed_at: string | null
+          created_at: string
+          failure_reason: string | null
+          id: string
+          is_touchless: boolean | null
+          pipeline_stage: string
+          processing_time_ms: number | null
+          status: string
+        }
+        Insert: {
+          auto_actions_taken?: Json | null
+          claim_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          failure_reason?: string | null
+          id?: string
+          is_touchless?: boolean | null
+          pipeline_stage: string
+          processing_time_ms?: number | null
+          status?: string
+        }
+        Update: {
+          auto_actions_taken?: Json | null
+          claim_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          failure_reason?: string | null
+          id?: string
+          is_touchless?: boolean | null
+          pipeline_stage?: string
+          processing_time_ms?: number | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stp_pipeline_runs_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "claims"
             referencedColumns: ["id"]
           },
         ]
