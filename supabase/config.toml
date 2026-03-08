@@ -8,3 +8,9 @@ verify_jwt = false
 
 [functions.scrub-claim]
 verify_jwt = false
+
+[functions.ai-payment-intelligence]
+verify_jwt = false
+
+[functions.ai-appeal-generator]
+verify_jwt = false
