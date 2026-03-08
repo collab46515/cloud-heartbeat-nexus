@@ -4,11 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { formatCurrency, formatClaimStatus, getClaimStatusColor } from "@/data/mock-claims";
 import { useClaims, usePayers, type ClaimWithRelations } from "@/hooks/useClaims";
-import { Search, Filter, Eye, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { Search, Filter, Eye, Loader2, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ClaimDetailPanel } from "./ClaimDetailPanel";
 
 export function ClaimsTable() {
   const [search, setSearch] = useState("");
