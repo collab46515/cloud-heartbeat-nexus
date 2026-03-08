@@ -14,3 +14,9 @@ verify_jwt = false
 
 [functions.ai-appeal-generator]
 verify_jwt = false
+
+[functions.ai-rta-prediction]
+verify_jwt = false
+
+[functions.ai-anomaly-detection]
+verify_jwt = false

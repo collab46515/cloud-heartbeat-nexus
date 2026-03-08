@@ -36,6 +36,7 @@ const navSections = [
     items: [
       { path: "/revenue-intelligence", label: "Revenue Intel", icon: TrendingUp },
       { path: "/exception-triage", label: "Exception Triage", icon: Brain },
+      { path: "/anomaly-detection", label: "Anomaly Detection", icon: Activity },
       { path: "/compliance", label: "Compliance", icon: ShieldCheck },
     ],
   },
