@@ -123,6 +123,10 @@ export function ClaimDetailPanel({ claim, onClose }: ClaimDetailPanelProps) {
               {predicting ? <Loader2 className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
               {predicting ? "Analyzing…" : "Run Denial Prediction"}
             </Button>
+            <Button onClick={handleRunScrub} disabled={runScrub.isPending} size="sm" variant="outline" className="gap-1">
+              {runScrub.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Shield className="h-3 w-3" />}
+              {runScrub.isPending ? "Scrubbing…" : "Run Scrub"}
+            </Button>
           </div>
 
           {/* Existing AI data from claim */}
