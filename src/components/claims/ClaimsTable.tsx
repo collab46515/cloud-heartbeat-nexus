@@ -110,6 +110,16 @@ export function ClaimsTable() {
                   </Badge>
                 </TableCell>
                 <TableCell>
+                  <Badge variant="outline" className={cn("text-[10px] border capitalize",
+                    (claim as any).scrub_status === "passed" ? "bg-success/15 text-success border-success/30" :
+                    (claim as any).scrub_status === "failed" ? "bg-destructive/15 text-destructive border-destructive/30" :
+                    (claim as any).scrub_status === "warnings" ? "bg-warning/15 text-warning border-warning/30" :
+                    (claim as any).scrub_status === "running" ? "bg-info/15 text-info border-info/30" : ""
+                  )}>
+                    {(claim as any).scrub_status || "pending"}
+                  </Badge>
+                </TableCell>
+                <TableCell>
                   {(claim as any).ai_risk_level && (claim as any).ai_risk_level !== "low" && (
                     <Badge variant="outline" className={cn("text-[10px] border gap-1",
                       (claim as any).ai_risk_level === "critical" ? "bg-destructive text-destructive-foreground" :
