@@ -39,6 +39,8 @@ import RevenueForecast from "./pages/RevenueForecast";
 import WorkflowOptimization from "./pages/WorkflowOptimization";
 import AIOperations from "./pages/AIOperations";
 import AIROIDashboard from "./pages/AIROIDashboard";
+import Notifications from "./pages/Notifications";
+import PatientPortal from "./pages/PatientPortal";
 
 const queryClient = new QueryClient();
 
@@ -84,6 +86,9 @@ const App = () => (
             {/* AI Governance */}
             <Route path="/ai-operations" element={<AIOperations />} />
             <Route path="/ai-roi" element={<AIROIDashboard />} />
+            {/* Notification Center & Patient Portal */}
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/patient-portal" element={<PatientPortal />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

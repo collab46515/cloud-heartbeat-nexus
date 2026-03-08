@@ -5,7 +5,7 @@ import {
   ChevronLeft, ChevronRight, Activity, LogOut, Shield, Package, Zap,
   Inbox, ClipboardList, DollarSign, Handshake, Receipt, Wallet,
   TrendingUp, ShieldCheck, Brain, Cog, Wrench, Fingerprint, Lock, Globe, Network,
-  Gauge, PieChart,
+  Gauge, PieChart, BellRing, UserCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -62,6 +62,13 @@ const navSections = [
       { path: "/integrations", label: "Integrations", icon: Network },
       { path: "/analytics", label: "Analytics", icon: BarChart3 },
       { path: "/reports", label: "Reports", icon: ClipboardList },
+      { path: "/notifications", label: "Notifications", icon: BellRing },
+    ],
+  },
+  {
+    title: "Patient Portal",
+    items: [
+      { path: "/patient-portal", label: "Patient Portal", icon: UserCircle },
     ],
   },
 ];
