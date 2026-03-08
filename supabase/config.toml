@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.ai-coding-suggestions]
 verify_jwt = false
+
+[functions.scrub-claim]
+verify_jwt = false
