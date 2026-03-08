@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.ai-workflow-optimization]
 verify_jwt = false
+
+[functions.ai-rcm-copilot]
+verify_jwt = false
