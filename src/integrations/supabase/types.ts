@@ -14,6 +14,109 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_feedback: {
+        Row: {
+          ai_capability: string
+          claim_id: string | null
+          created_at: string
+          feedback_text: string | null
+          id: string
+          outcome: string | null
+          prediction_id: string | null
+          prediction_was_correct: boolean | null
+          rating: string
+          user_id: string | null
+        }
+        Insert: {
+          ai_capability: string
+          claim_id?: string | null
+          created_at?: string
+          feedback_text?: string | null
+          id?: string
+          outcome?: string | null
+          prediction_id?: string | null
+          prediction_was_correct?: boolean | null
+          rating: string
+          user_id?: string | null
+        }
+        Update: {
+          ai_capability?: string
+          claim_id?: string | null
+          created_at?: string
+          feedback_text?: string | null
+          id?: string
+          outcome?: string | null
+          prediction_id?: string | null
+          prediction_was_correct?: boolean | null
+          rating?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_feedback_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "claims"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_usage_logs: {
+        Row: {
+          capability: string
+          claim_id: string | null
+          created_at: string
+          edge_function: string
+          error_message: string | null
+          estimated_cost: number | null
+          id: string
+          latency_ms: number | null
+          model_used: string | null
+          request_tokens: number | null
+          response_tokens: number | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          capability: string
+          claim_id?: string | null
+          created_at?: string
+          edge_function: string
+          error_message?: string | null
+          estimated_cost?: number | null
+          id?: string
+          latency_ms?: number | null
+          model_used?: string | null
+          request_tokens?: number | null
+          response_tokens?: number | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          capability?: string
+          claim_id?: string | null
+          created_at?: string
+          edge_function?: string
+          error_message?: string | null
+          estimated_cost?: number | null
+          id?: string
+          latency_ms?: number | null
+          model_used?: string | null
+          request_tokens?: number | null
+          response_tokens?: number | null
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_usage_logs_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "claims"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_log: {
         Row: {
           action: string
