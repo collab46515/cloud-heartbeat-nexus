@@ -1,11 +1,12 @@
 import { cn } from "@/lib/utils";
-import { mockClaims } from "@/data/mock-claims";
+import { useClaimStats } from "@/hooks/useClaims";
+import { Loader2 } from "lucide-react";
 
 const stages = [
   { key: "draft", label: "Draft", color: "bg-muted" },
   { key: "scrubbing", label: "Scrubbing", color: "bg-info" },
   { key: "submitted", label: "Submitted", color: "bg-primary" },
-  { key: "acknowledged", label: "Acknowledged", color: "bg-info" },
+  { key: "acknowledged", label: "Ack'd", color: "bg-info" },
   { key: "pending", label: "Pending", color: "bg-warning" },
   { key: "paid,partial_paid", label: "Paid", color: "bg-success" },
   { key: "denied", label: "Denied", color: "bg-destructive" },
@@ -13,12 +14,17 @@ const stages = [
 ];
 
 export function ClaimsPipeline() {
+  const { data: stats, isLoading } = useClaimStats();
+
+  if (isLoading) {
+    return <div className="flex justify-center py-4"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>;
+  }
+
+  const statusCounts = stats?.statusCounts || {};
+
   const counts = stages.map((s) => {
     const keys = s.key.split(",");
-    return {
-      ...s,
-      count: mockClaims.filter((c) => keys.includes(c.claim_status)).length,
-    };
+    return { ...s, count: keys.reduce((sum, k) => sum + (statusCounts[k] || 0), 0) };
   });
 
   const max = Math.max(...counts.map((c) => c.count), 1);
