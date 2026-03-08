@@ -88,7 +88,6 @@ function useCreateClaimFromEncounter() {
       if (error) throw error;
       await supabase.from("encounters").update({ status: "billed" }).eq("id", encounter.id);
     },
-    },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["encounters"] });
       qc.invalidateQueries({ queryKey: ["claims"] });
