@@ -15,28 +15,28 @@ export function useWorkloadQueues() {
   });
 }
 
-export function useWorkloadItems(queueId?: string) {
+export function useWorkloadItems(statusFilter?: string) {
   return useQuery({
-    queryKey: ["workload-items", queueId],
+    queryKey: ["workload-items", statusFilter],
     queryFn: async () => {
       let query = supabase
         .from("workload_items")
         .select(`
           *,
+          workload_queues(queue_name, queue_type),
           claims(claim_number, total_charge_amount, claim_status, patients(first_name, last_name))
         `)
-        .order("priority", { ascending: false })
+        .order("priority", { ascending: true })
         .order("created_at", { ascending: true });
 
-      if (queueId) {
-        query = query.eq("queue_id", queueId);
+      if (statusFilter) {
+        query = query.eq("status", statusFilter);
       }
 
       const { data, error } = await query;
       if (error) throw error;
       return data;
     },
-    enabled: !!queueId,
   });
 }
 
