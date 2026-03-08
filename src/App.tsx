@@ -35,6 +35,8 @@ import DataResidency from "./pages/DataResidency";
 // Integration Hub
 import IntegrationHub from "./pages/IntegrationHub";
 import AnomalyDetection from "./pages/AnomalyDetection";
+import RevenueForecast from "./pages/RevenueForecast";
+import WorkflowOptimization from "./pages/WorkflowOptimization";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +77,8 @@ const App = () => (
             {/* Integration Hub */}
             <Route path="/integrations" element={<IntegrationHub />} />
             <Route path="/anomaly-detection" element={<AnomalyDetection />} />
+            <Route path="/revenue-forecast" element={<RevenueForecast />} />
+            <Route path="/workflow-optimization" element={<WorkflowOptimization />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -20,3 +20,9 @@ verify_jwt = false
 
 [functions.ai-anomaly-detection]
 verify_jwt = false
+
+[functions.ai-revenue-forecast]
+verify_jwt = false
+
+[functions.ai-workflow-optimization]
+verify_jwt = false
