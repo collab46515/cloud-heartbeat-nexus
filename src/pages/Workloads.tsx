@@ -45,7 +45,7 @@ export default function Workloads() {
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="page-animate-in space-y-6 p-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">Workload Management</h1>
         <p className="text-sm text-muted-foreground">Skill-based routing, priority scoring, and escalation management for your team.</p>

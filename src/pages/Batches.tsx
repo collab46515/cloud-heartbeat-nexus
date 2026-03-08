@@ -31,7 +31,7 @@ export default function Batches() {
   const pending = batches.filter(b => b.status === "pending" || b.status === "submitted").length;
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="page-animate-in space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">Batch Submissions</h1>

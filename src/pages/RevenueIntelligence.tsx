@@ -77,7 +77,7 @@ export default function RevenueIntelligence() {
   if (isLoading) return <div className="flex justify-center py-24"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="page-animate-in space-y-6 p-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">Revenue Intelligence & Benchmarking</h1>
         <p className="text-sm text-muted-foreground">AI-powered revenue analytics, what-if simulation, and industry benchmarking.</p>

@@ -56,10 +56,10 @@ export default function Denials() {
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="page-animate-in space-y-6 p-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">Denial Management</h1>
-        <p className="text-sm text-muted-foreground">Track, appeal, and resolve claim denials across all payers.</p>
+        <p className="mt-0.5 text-sm text-muted-foreground">Track, appeal, and resolve claim denials across all payers.</p>
       </div>
 
       {/* KPIs */}

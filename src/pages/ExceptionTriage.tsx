@@ -96,7 +96,7 @@ export default function ExceptionTriage() {
   const totalAtRisk = claims.reduce((s, c) => s + (c.priority_score >= 50 ? c.total_charge_amount : 0), 0);
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="page-animate-in space-y-6 p-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">Exception Triage AI</h1>
         <p className="text-sm text-muted-foreground">AI-powered intelligent work prioritization based on revenue impact, aging, and risk scoring.</p>

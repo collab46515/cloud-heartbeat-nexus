@@ -53,7 +53,7 @@ export default function Analytics() {
   ];
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="page-animate-in space-y-6 p-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">Revenue Intelligence</h1>
         <p className="text-sm text-muted-foreground">Analytics, benchmarking, and predictive insights for your revenue cycle.</p>

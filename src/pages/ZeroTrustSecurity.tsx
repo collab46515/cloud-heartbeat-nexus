@@ -65,7 +65,7 @@ export default function ZeroTrustSecurity() {
   if (isLoading) return <div className="flex justify-center py-24"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="page-animate-in space-y-6 p-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">Zero Trust Security</h1>
         <p className="text-sm text-muted-foreground">Security posture, access controls, MFA, encryption, and compliance verification.</p>
