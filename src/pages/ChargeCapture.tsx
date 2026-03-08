@@ -68,18 +68,26 @@ function useCreateClaimFromEncounter() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (encounter: any) => {
-      const { error } = await supabase.from("claims").insert({
+      // Need a payer_id - get from patient's first claim or skip
+      const { data: existingClaim } = await supabase.from("claims").select("payer_id").eq("patient_id", encounter.patient_id).limit(1).single();
+      const { data: firstPayer } = await supabase.from("payers").select("id").limit(1).single();
+      const payerId = existingClaim?.payer_id || firstPayer?.id;
+      if (!payerId) throw new Error("No payer available");
+      
+      const { error } = await supabase.from("claims").insert([{
+        claim_number: `CLM-${Date.now()}`,
         patient_id: encounter.patient_id,
-        payer_id: encounter.payer_id || encounter.patient_id, // fallback
+        payer_id: payerId,
         encounter_id: encounter.id,
         service_date: encounter.admission_date,
-        claim_type: encounter.visit_type === "inpatient" ? "institutional" : "professional",
+        claim_type: encounter.visit_type === "inpatient" ? "institutional" as const : "professional" as const,
         facility_name: encounter.facility_name,
         provider_id: encounter.attending_provider_id,
         total_charge_amount: Number(encounter.total_charges) || 0,
-      });
+      }]);
       if (error) throw error;
       await supabase.from("encounters").update({ status: "billed" }).eq("id", encounter.id);
+    },
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["encounters"] });
