@@ -37,6 +37,8 @@ import IntegrationHub from "./pages/IntegrationHub";
 import AnomalyDetection from "./pages/AnomalyDetection";
 import RevenueForecast from "./pages/RevenueForecast";
 import WorkflowOptimization from "./pages/WorkflowOptimization";
+import AIOperations from "./pages/AIOperations";
+import AIROIDashboard from "./pages/AIROIDashboard";
 
 const queryClient = new QueryClient();
 
@@ -79,6 +81,9 @@ const App = () => (
             <Route path="/anomaly-detection" element={<AnomalyDetection />} />
             <Route path="/revenue-forecast" element={<RevenueForecast />} />
             <Route path="/workflow-optimization" element={<WorkflowOptimization />} />
+            {/* AI Governance */}
+            <Route path="/ai-operations" element={<AIOperations />} />
+            <Route path="/ai-roi" element={<AIROIDashboard />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
