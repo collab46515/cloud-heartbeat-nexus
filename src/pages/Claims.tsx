@@ -35,6 +35,7 @@ const Claims = () => {
       <div className="space-y-4">
         <ClaimsTable />
       </div>
+      <ClaimWizard open={wizardOpen} onOpenChange={setWizardOpen} />
     </PageWrapper>
   );
 };
