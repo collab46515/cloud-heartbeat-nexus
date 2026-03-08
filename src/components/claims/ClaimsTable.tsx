@@ -148,15 +148,6 @@ export function ClaimsTable() {
                     </Button>
                   </div>
                 </TableCell>
-                  <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => handleRunScrub(e, claim.id)} disabled={runScrub.isPending}>
-                      {runScrub.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Shield className="h-3.5 w-3.5" />}
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-7 w-7">
-                      <Eye className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                </TableCell>
               </TableRow>
             ))}
             {claims.length === 0 && (
