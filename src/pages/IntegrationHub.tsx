@@ -88,7 +88,7 @@ export default function IntegrationHub() {
   integrations.forEach((i: any) => { byType[i.integration_type] = (byType[i.integration_type] || 0) + 1; });
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="page-animate-in space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">Integration Hub</h1>

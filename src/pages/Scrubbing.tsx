@@ -124,7 +124,7 @@ export default function Scrubbing() {
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="page-animate-in space-y-6 p-6">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Claim Scrubbing Engine</h1>
