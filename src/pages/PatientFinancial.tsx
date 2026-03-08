@@ -10,9 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Wallet, CreditCard, Plus, Loader2, Search, CheckCircle, Clock, AlertTriangle } from "lucide-react";
+import { Wallet, CreditCard, Plus, Loader2, CheckCircle, Clock, AlertTriangle, Brain, MessageSquare, TrendingUp, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { usePaymentIntelligence, type PaymentIntelligence } from "@/hooks/usePaymentIntelligence";
+import { Progress } from "@/components/ui/progress";
 
 function usePaymentPlans() {
   return useQuery({
@@ -100,14 +102,130 @@ const refundStatusColors: Record<string, string> = {
   written_off: "bg-muted text-muted-foreground",
 };
 
+const riskColors: Record<string, string> = {
+  low_risk: "text-success",
+  medium_risk: "text-warning",
+  high_risk: "text-destructive",
+  very_high_risk: "text-destructive",
+};
+
+function PaymentIntelligencePanel({ result, loading }: { result: PaymentIntelligence | null; loading: boolean }) {
+  if (loading) {
+    return (
+      <Card className="border-primary/30 bg-primary/5">
+        <CardContent className="flex items-center justify-center gap-3 py-12">
+          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+          <span className="text-sm text-muted-foreground">Analyzing patient financial profile...</span>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!result) return null;
+
+  return (
+    <Card className="border-primary/30 bg-primary/5">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-sm font-semibold flex items-center gap-2">
+          <Brain className="h-4 w-4 text-primary" />
+          AI Payment Intelligence
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Risk & Likelihood */}
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div>
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Risk Category</p>
+            <p className={cn("text-sm font-bold capitalize", riskColors[result.risk_category])}>
+              {result.risk_category.replace(/_/g, " ")}
+            </p>
+          </div>
+          <div>
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">30-Day Likelihood</p>
+            <div className="flex items-center gap-2">
+              <Progress value={result.payment_likelihood_30_days * 100} className="h-2 flex-1" />
+              <span className="text-xs font-mono font-bold">{(result.payment_likelihood_30_days * 100).toFixed(0)}%</span>
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">90-Day Likelihood</p>
+            <div className="flex items-center gap-2">
+              <Progress value={result.payment_likelihood_90_days * 100} className="h-2 flex-1" />
+              <span className="text-xs font-mono font-bold">{(result.payment_likelihood_90_days * 100).toFixed(0)}%</span>
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Outstanding</p>
+            <p className="text-sm font-bold">${result.outstanding_balance?.toLocaleString("en", { minimumFractionDigits: 2 })}</p>
+          </div>
+        </div>
+
+        {/* Strategy & Plan */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="rounded-md border bg-background/50 p-3 space-y-2">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-semibold">Recommended Strategy</span>
+            </div>
+            <Badge variant="outline" className="text-[10px] capitalize">{result.recommended_strategy.replace(/_/g, " ")}</Badge>
+            {result.optimal_plan && (
+              <div className="text-xs text-muted-foreground space-y-0.5">
+                <p><span className="font-medium text-foreground">${result.optimal_plan.monthly_amount?.toFixed(2)}/mo</span> × {result.optimal_plan.months} months</p>
+                <p>Auto-pay: {result.optimal_plan.autopay_recommended ? "Recommended" : "Optional"}</p>
+                {result.optimal_plan.expected_completion_rate != null && (
+                  <p>Completion rate: {(result.optimal_plan.expected_completion_rate * 100).toFixed(0)}%</p>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="rounded-md border bg-background/50 p-3 space-y-2">
+            <div className="flex items-center gap-2">
+              <MessageSquare className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-semibold">Outreach Message</span>
+            </div>
+            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+              <Badge variant="outline" className="text-[10px] capitalize">{result.communication.preferred_channel}</Badge>
+              <Badge variant="outline" className="text-[10px] capitalize">{result.communication.message_tone}</Badge>
+              {result.communication.best_contact_time && <span>Best: {result.communication.best_contact_time}</span>}
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed italic">"{result.communication.personalized_message}"</p>
+          </div>
+        </div>
+
+        {/* Insights */}
+        {result.insights?.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Insights</p>
+            <div className="flex flex-wrap gap-2">
+              {result.insights.map((ins, i) => (
+                <div key={i} className={cn(
+                  "rounded-md border px-2.5 py-1 text-xs",
+                  ins.impact === "positive" ? "border-success/30 bg-success/10 text-success" :
+                  ins.impact === "negative" ? "border-destructive/30 bg-destructive/10 text-destructive" :
+                  "border-border bg-muted/30 text-muted-foreground"
+                )}>
+                  {ins.insight}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function PatientFinancial() {
   const { data: plans = [], isLoading: loadingPlans } = usePaymentPlans();
   const { data: credits = [], isLoading: loadingCredits } = useCreditBalances();
   const { data: payments = [] } = usePatientPayments();
   const { data: patients = [] } = usePatientsList();
   const createPlan = useCreatePaymentPlan();
+  const { analyze, result: aiResult, loading: aiLoading } = usePaymentIntelligence();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState({ patient_id: "", total_balance: "", monthly_amount: "", number_of_payments: "6" });
+  const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
 
   const activePlans = plans.filter((p: any) => p.status === "active");
   const totalOutstanding = activePlans.reduce((s: number, p: any) => s + Number(p.remaining_balance), 0);
@@ -128,34 +246,41 @@ export default function PatientFinancial() {
     } catch { toast.error("Failed to create plan"); }
   };
 
+  const handleAnalyzePatient = async (patientId: string) => {
+    setSelectedPatientId(patientId);
+    try { await analyze(patientId); } catch {}
+  };
+
   return (
     <div className="page-animate-in space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">Patient Financial Engagement</h1>
-          <p className="text-sm text-muted-foreground">Payment plans, cost estimates, collections, and credit balance management.</p>
+          <p className="text-sm text-muted-foreground">AI-powered payment plans, cost estimates, collections, and credit balance management.</p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild><Button className="gap-1"><Plus className="h-4 w-4" /> New Plan</Button></DialogTrigger>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Create Payment Plan</DialogTitle></DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label>Patient</Label>
-                <Select value={form.patient_id} onValueChange={v => setForm(f => ({ ...f, patient_id: v }))}>
-                  <SelectTrigger><SelectValue placeholder="Select patient" /></SelectTrigger>
-                  <SelectContent>{patients.map((p: any) => <SelectItem key={p.id} value={p.id}>{p.last_name}, {p.first_name} ({p.mrn})</SelectItem>)}</SelectContent>
-                </Select>
+        <div className="flex items-center gap-2">
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild><Button className="gap-1"><Plus className="h-4 w-4" /> New Plan</Button></DialogTrigger>
+            <DialogContent>
+              <DialogHeader><DialogTitle>Create Payment Plan</DialogTitle></DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label>Patient</Label>
+                  <Select value={form.patient_id} onValueChange={v => setForm(f => ({ ...f, patient_id: v }))}>
+                    <SelectTrigger><SelectValue placeholder="Select patient" /></SelectTrigger>
+                    <SelectContent>{patients.map((p: any) => <SelectItem key={p.id} value={p.id}>{p.last_name}, {p.first_name} ({p.mrn})</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div><Label>Total Balance</Label><Input type="number" step="0.01" value={form.total_balance} onChange={e => setForm(f => ({ ...f, total_balance: e.target.value }))} placeholder="0.00" /></div>
+                  <div><Label>Monthly</Label><Input type="number" step="0.01" value={form.monthly_amount} onChange={e => setForm(f => ({ ...f, monthly_amount: e.target.value }))} placeholder="0.00" /></div>
+                  <div><Label>Payments</Label><Input type="number" value={form.number_of_payments} onChange={e => setForm(f => ({ ...f, number_of_payments: e.target.value }))} /></div>
+                </div>
               </div>
-              <div className="grid grid-cols-3 gap-3">
-                <div><Label>Total Balance</Label><Input type="number" step="0.01" value={form.total_balance} onChange={e => setForm(f => ({ ...f, total_balance: e.target.value }))} placeholder="0.00" /></div>
-                <div><Label>Monthly</Label><Input type="number" step="0.01" value={form.monthly_amount} onChange={e => setForm(f => ({ ...f, monthly_amount: e.target.value }))} placeholder="0.00" /></div>
-                <div><Label>Payments</Label><Input type="number" value={form.number_of_payments} onChange={e => setForm(f => ({ ...f, number_of_payments: e.target.value }))} /></div>
-              </div>
-            </div>
-            <DialogFooter><Button onClick={handleCreate} disabled={createPlan.isPending}>{createPlan.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}Create Plan</Button></DialogFooter>
-          </DialogContent>
-        </Dialog>
+              <DialogFooter><Button onClick={handleCreate} disabled={createPlan.isPending}>{createPlan.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}Create Plan</Button></DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -164,6 +289,9 @@ export default function PatientFinancial() {
         <Card className="border-border/60"><CardContent className="p-4"><p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Collected</p><p className="mt-1 text-2xl font-bold text-success">${recentPayments.toLocaleString("en", { minimumFractionDigits: 2 })}</p></CardContent></Card>
         <Card className="border-border/60"><CardContent className="p-4"><p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Credit Balances</p><p className="mt-1 text-2xl font-bold text-destructive">${totalCredits.toLocaleString("en", { minimumFractionDigits: 2 })}</p></CardContent></Card>
       </div>
+
+      {/* AI Intelligence Panel */}
+      <PaymentIntelligencePanel result={aiResult} loading={aiLoading} />
 
       <Tabs defaultValue="plans" className="w-full">
         <TabsList>
@@ -179,10 +307,10 @@ export default function PatientFinancial() {
               <p className="text-xs text-muted-foreground">Create interest-free payment plans for patients.</p>
             </CardContent></Card>
           ) : (
-            <div className="rounded-lg border">
-              <Table>
+            <div className="rounded-lg border overflow-x-auto">
+              <Table className="min-w-[900px]">
                 <TableHeader><TableRow className="bg-muted/40">
-                  <TableHead>Patient</TableHead><TableHead>Total</TableHead><TableHead>Monthly</TableHead><TableHead>Remaining</TableHead><TableHead>Payments</TableHead><TableHead>Next Due</TableHead><TableHead>Auto-Pay</TableHead><TableHead>Status</TableHead>
+                  <TableHead>Patient</TableHead><TableHead>Total</TableHead><TableHead>Monthly</TableHead><TableHead>Remaining</TableHead><TableHead>Payments</TableHead><TableHead>Next Due</TableHead><TableHead>Auto-Pay</TableHead><TableHead>Status</TableHead><TableHead className="w-10">AI</TableHead>
                 </TableRow></TableHeader>
                 <TableBody>
                   {plans.map((p: any) => (
@@ -195,6 +323,18 @@ export default function PatientFinancial() {
                       <TableCell className="text-sm">{p.next_payment_date ? new Date(p.next_payment_date).toLocaleDateString() : "—"}</TableCell>
                       <TableCell>{p.auto_pay ? <CheckCircle className="h-4 w-4 text-success" /> : <Clock className="h-4 w-4 text-muted-foreground" />}</TableCell>
                       <TableCell><Badge variant="outline" className={cn("text-[10px] border", planStatusColors[p.status] || "")}>{p.status}</Badge></TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          disabled={aiLoading}
+                          onClick={() => handleAnalyzePatient(p.patient_id)}
+                          title="AI Payment Intelligence"
+                        >
+                          <Brain className={cn("h-3.5 w-3.5", selectedPatientId === p.patient_id && aiResult ? "text-primary" : "text-muted-foreground")} />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -211,8 +351,8 @@ export default function PatientFinancial() {
               <p className="text-xs text-muted-foreground">Credit balances from overpayments will appear here.</p>
             </CardContent></Card>
           ) : (
-            <div className="rounded-lg border">
-              <Table>
+            <div className="rounded-lg border overflow-x-auto">
+              <Table className="min-w-[900px]">
                 <TableHeader><TableRow className="bg-muted/40">
                   <TableHead>Patient</TableHead><TableHead>Claim</TableHead><TableHead>Type</TableHead><TableHead>Amount</TableHead><TableHead>Payer</TableHead><TableHead>Medicare 60-Day</TableHead><TableHead>Deadline</TableHead><TableHead>Status</TableHead>
                 </TableRow></TableHeader>
