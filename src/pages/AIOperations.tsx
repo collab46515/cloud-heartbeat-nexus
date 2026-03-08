@@ -7,9 +7,9 @@ import { Activity, Zap, DollarSign, AlertTriangle, CheckCircle, XCircle, Clock, 
 import { format } from "date-fns";
 
 function StatusBadge({ rate }: { rate: number }) {
-  if (rate >= 99) return <Badge className="bg-emerald-500/15 text-emerald-600 border-emerald-200">Healthy</Badge>;
-  if (rate >= 95) return <Badge className="bg-amber-500/15 text-amber-600 border-amber-200">Degraded</Badge>;
-  return <Badge variant="destructive">Critical</Badge>;
+  if (rate >= 99) return <Badge className="bg-emerald-500/15 text-emerald-600 border-emerald-200" asChild={false}>Healthy</Badge>;
+  if (rate >= 95) return <Badge className="bg-amber-500/15 text-amber-600 border-amber-200" asChild={false}>Degraded</Badge>;
+  return <Badge variant="destructive" asChild={false}>Critical</Badge>;
 }
 
 export default function AIOperations() {
