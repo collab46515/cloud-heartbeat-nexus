@@ -10,7 +10,9 @@ import { Brain, Zap, AlertTriangle, CheckCircle, Loader2, Shield, FileCode } fro
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatClaimStatus, getClaimStatusColor } from "@/data/mock-claims";
 import { useAIPrediction, useCodingSuggestions, type DenialPrediction, type CodingResult } from "@/hooks/useAIPrediction";
+import { useRunScrub } from "@/hooks/useScrubbing";
 import type { ClaimWithRelations } from "@/hooks/useClaims";
+import { toast } from "sonner";
 
 interface ClaimDetailPanelProps {
   claim: ClaimWithRelations;
