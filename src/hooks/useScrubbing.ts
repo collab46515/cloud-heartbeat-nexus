@@ -1,15 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export function useScrubRules() {
+export function useScrubRules(includeInactive = true) {
   return useQuery({
-    queryKey: ["scrub-rules"],
+    queryKey: ["scrub-rules", includeInactive],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("scrub_rules")
-        .select("*")
-        .eq("is_active", true)
-        .order("severity", { ascending: true });
+      let query = supabase.from("scrub_rules").select("*").order("severity", { ascending: true });
+      if (!includeInactive) query = query.eq("is_active", true);
+      const { data, error } = await query;
       if (error) throw error;
       return data;
     },
@@ -61,9 +59,7 @@ export function useScrubStats() {
   return useQuery({
     queryKey: ["scrub-stats"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("scrub_results")
-        .select("severity, resolved, auto_corrected, claim_id");
+      const { data, error } = await supabase.from("scrub_results").select("severity, resolved, auto_corrected, claim_id");
       if (error) throw error;
 
       const total = data.length;
@@ -93,6 +89,7 @@ export function useRunScrub() {
       queryClient.invalidateQueries({ queryKey: ["scrub-results"] });
       queryClient.invalidateQueries({ queryKey: ["scrub-stats"] });
       queryClient.invalidateQueries({ queryKey: ["claims"] });
+      queryClient.invalidateQueries({ queryKey: ["claims-for-scrub"] });
     },
   });
 }
@@ -107,7 +104,7 @@ export function useRunBulkScrub() {
           const { data, error } = await supabase.functions.invoke("scrub-claim", {
             body: { claim_id: id },
           });
-          results.push({ claim_id: id, success: !error && !data?.error, data });
+          results.push({ claim_id: id, success: !error && !data?.error, data, error });
         } catch (e) {
           results.push({ claim_id: id, success: false, error: e });
         }
@@ -118,6 +115,50 @@ export function useRunBulkScrub() {
       queryClient.invalidateQueries({ queryKey: ["scrub-results"] });
       queryClient.invalidateQueries({ queryKey: ["scrub-stats"] });
       queryClient.invalidateQueries({ queryKey: ["claims"] });
+      queryClient.invalidateQueries({ queryKey: ["claims-for-scrub"] });
+    },
+  });
+}
+
+export function useSaveScrubRule() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: any) => {
+      const { data: userData } = await supabase.auth.getUser();
+      const userId = userData.user?.id;
+
+      if (payload.id) {
+        const { id, ...updates } = payload;
+        const { error } = await supabase
+          .from("scrub_rules")
+          .update({ ...updates, updated_by: userId, updated_at: new Date().toISOString() })
+          .eq("id", id);
+        if (error) throw error;
+        return;
+      }
+
+      const { error } = await supabase
+        .from("scrub_rules")
+        .insert({ ...payload, created_by: userId, updated_by: userId });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["scrub-rules"] });
+    },
+  });
+}
+
+export function useDeleteScrubRule() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("scrub_rules").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["scrub-rules"] });
     },
   });
 }
