@@ -40,6 +40,7 @@ export function AppLayout() {
           <Outlet />
         </main>
       </div>
+      <RCMCopilot />
     </div>
   );
 }
