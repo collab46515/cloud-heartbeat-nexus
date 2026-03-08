@@ -52,6 +52,7 @@ export function useResolveScrubResult() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["scrub-results"] });
+      queryClient.invalidateQueries({ queryKey: ["scrub-stats"] });
     },
   });
 }
@@ -73,6 +74,50 @@ export function useScrubStats() {
       const uniqueClaims = new Set(data.map((r) => r.claim_id)).size;
 
       return { total, errors, warnings, resolved, autoCorrected, uniqueClaims };
+    },
+  });
+}
+
+export function useRunScrub() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (claimId: string) => {
+      const { data, error } = await supabase.functions.invoke("scrub-claim", {
+        body: { claim_id: claimId },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["scrub-results"] });
+      queryClient.invalidateQueries({ queryKey: ["scrub-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["claims"] });
+    },
+  });
+}
+
+export function useRunBulkScrub() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (claimIds: string[]) => {
+      const results = [];
+      for (const id of claimIds) {
+        try {
+          const { data, error } = await supabase.functions.invoke("scrub-claim", {
+            body: { claim_id: id },
+          });
+          results.push({ claim_id: id, success: !error && !data?.error, data });
+        } catch (e) {
+          results.push({ claim_id: id, success: false, error: e });
+        }
+      }
+      return results;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["scrub-results"] });
+      queryClient.invalidateQueries({ queryKey: ["scrub-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["claims"] });
     },
   });
 }
