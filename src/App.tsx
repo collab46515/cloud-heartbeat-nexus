@@ -15,6 +15,12 @@ import Scrubbing from "./pages/Scrubbing";
 import RTA from "./pages/RTA";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Workloads from "./pages/Workloads";
+import Reports from "./pages/Reports";
+import PaymentPosting from "./pages/PaymentPosting";
+import PayerContracts from "./pages/PayerContracts";
+import ChargeCapture from "./pages/ChargeCapture";
+import PatientFinancial from "./pages/PatientFinancial";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +41,12 @@ const App = () => (
             <Route path="/rta" element={<RTA />} />
             <Route path="/denials" element={<Denials />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/workloads" element={<Workloads />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/payment-posting" element={<PaymentPosting />} />
+            <Route path="/payer-contracts" element={<PayerContracts />} />
+            <Route path="/charge-capture" element={<ChargeCapture />} />
+            <Route path="/patient-financial" element={<PatientFinancial />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

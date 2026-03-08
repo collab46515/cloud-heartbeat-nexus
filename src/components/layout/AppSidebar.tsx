@@ -3,6 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard, FileText, Users, ShieldAlert, BarChart3,
   ChevronLeft, ChevronRight, Activity, LogOut, Shield, Package, Zap,
+  Inbox, ClipboardList, DollarSign, Handshake, Receipt, Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,7 +16,13 @@ const navItems = [
   { path: "/batches", label: "Batches", icon: Package },
   { path: "/rta", label: "Real-Time Adj.", icon: Zap },
   { path: "/denials", label: "Denials", icon: ShieldAlert },
+  { path: "/payment-posting", label: "Payment Posting", icon: DollarSign },
+  { path: "/charge-capture", label: "Charge Capture", icon: Receipt },
+  { path: "/payer-contracts", label: "Contracts", icon: Handshake },
+  { path: "/patient-financial", label: "Patient Billing", icon: Wallet },
+  { path: "/workloads", label: "Workloads", icon: Inbox },
   { path: "/analytics", label: "Analytics", icon: BarChart3 },
+  { path: "/reports", label: "Reports", icon: ClipboardList },
 ];
 
 export function AppSidebar() {
