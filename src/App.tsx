@@ -74,6 +74,7 @@ const App = () => (
             <Route path="/data-residency" element={<DataResidency />} />
             {/* Integration Hub */}
             <Route path="/integrations" element={<IntegrationHub />} />
+            <Route path="/anomaly-detection" element={<AnomalyDetection />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
