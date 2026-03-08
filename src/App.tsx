@@ -7,6 +7,8 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import Claims from "./pages/Claims";
+import Denials from "./pages/Denials";
+import Analytics from "./pages/Analytics";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -23,6 +25,8 @@ const App = () => (
           <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route path="/" element={<Index />} />
             <Route path="/claims" element={<Claims />} />
+            <Route path="/denials" element={<Denials />} />
+            <Route path="/analytics" element={<Analytics />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -10,9 +10,9 @@ import { useAuth } from "@/hooks/useAuth";
 const navItems = [
   { path: "/", label: "Dashboard", icon: LayoutDashboard },
   { path: "/claims", label: "Claims", icon: FileText },
+  { path: "/denials", label: "Denials", icon: ShieldAlert },
+  { path: "/analytics", label: "Analytics", icon: BarChart3 },
   { path: "/patients", label: "Patient Access", icon: Users, disabled: true, phase: 2 },
-  { path: "/denials", label: "Denials", icon: ShieldAlert, disabled: true, phase: 3 },
-  { path: "/analytics", label: "Analytics", icon: BarChart3, disabled: true, phase: 4 },
 ];
 
 export function AppSidebar() {
