@@ -87,9 +87,10 @@ export function ClaimsTable() {
               <TableHead className="text-right">Charges</TableHead>
               <TableHead className="text-right">Paid</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Scrub</TableHead>
               <TableHead>AI Risk</TableHead>
               <TableHead className="text-right">Days A/R</TableHead>
-              <TableHead className="w-10"></TableHead>
+              <TableHead className="w-20"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
