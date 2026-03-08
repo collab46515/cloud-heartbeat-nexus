@@ -17,20 +17,19 @@ const Claims = () => {
       {/* KPIs */}
       <KpiCards />
 
-      {/* Pipeline + Table */}
-      <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
-        <Card className="border-border/60">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-semibold">Claims Pipeline</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ClaimsPipeline />
-          </CardContent>
-        </Card>
+      {/* Pipeline inline */}
+      <Card className="border-border/60">
+        <CardHeader className="pb-2 pt-4 px-5">
+          <CardTitle className="text-sm font-semibold">Claims Pipeline</CardTitle>
+        </CardHeader>
+        <CardContent className="px-5 pb-4">
+          <ClaimsPipeline />
+        </CardContent>
+      </Card>
 
-        <div className="space-y-4">
-          <ClaimsTable />
-        </div>
+      {/* Claims Table — full width */}
+      <div className="space-y-4">
+        <ClaimsTable />
       </div>
     </div>
   );
