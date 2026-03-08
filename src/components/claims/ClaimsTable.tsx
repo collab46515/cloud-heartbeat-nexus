@@ -21,6 +21,17 @@ export function ClaimsTable() {
 
   const { data: claims = [], isLoading } = useClaims({ status: statusFilter, payer_id: payerFilter, search });
   const { data: payers = [] } = usePayers();
+  const runScrub = useRunScrub();
+
+  const handleRunScrub = async (e: React.MouseEvent, claimId: string) => {
+    e.stopPropagation();
+    try {
+      const result = await runScrub.mutateAsync(claimId);
+      toast.success(`Scrub: ${result.scrub_status} (${result.total_findings} findings, ${result.errors} errors)`);
+    } catch (err: any) {
+      toast.error(err.message || "Scrub failed");
+    }
+  };
 
   if (isLoading) {
     return (
