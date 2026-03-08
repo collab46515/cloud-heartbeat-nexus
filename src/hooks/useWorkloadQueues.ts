@@ -52,3 +52,29 @@ export function useUpdateWorkloadItem() {
     },
   });
 }
+
+export function useAssignWorkloadItem() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, assigned_to }: { id: string; assigned_to: string }) => {
+      const { error } = await supabase.from("workload_items").update({ assigned_to, assigned_at: new Date().toISOString(), status: "assigned" }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["workload-items"] });
+    },
+  });
+}
+
+export function useCompleteWorkloadItem() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, completion_notes }: { id: string; completion_notes?: string }) => {
+      const { error } = await supabase.from("workload_items").update({ status: "completed", completed_at: new Date().toISOString(), completion_notes }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["workload-items"] });
+    },
+  });
+}
