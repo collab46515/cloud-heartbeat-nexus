@@ -39,6 +39,8 @@ import RevenueForecast from "./pages/RevenueForecast";
 import WorkflowOptimization from "./pages/WorkflowOptimization";
 import AIOperations from "./pages/AIOperations";
 import AIROIDashboard from "./pages/AIROIDashboard";
+import Notifications from "./pages/Notifications";
+import PatientPortal from "./pages/PatientPortal";
 
 const queryClient = new QueryClient();
 
