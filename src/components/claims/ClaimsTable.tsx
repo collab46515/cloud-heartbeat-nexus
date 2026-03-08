@@ -94,6 +94,18 @@ export function ClaimsTable() {
                     {formatClaimStatus(claim.claim_status)}
                   </Badge>
                 </TableCell>
+                <TableCell>
+                  {(claim as any).ai_risk_level && (claim as any).ai_risk_level !== "low" && (
+                    <Badge variant="outline" className={cn("text-[10px] border gap-1",
+                      (claim as any).ai_risk_level === "critical" ? "bg-destructive text-destructive-foreground" :
+                      (claim as any).ai_risk_level === "high" ? "border-destructive/30 text-destructive" :
+                      "border-warning/30 text-warning"
+                    )}>
+                      <Brain className="h-2.5 w-2.5" />
+                      {(claim as any).ai_risk_level}
+                    </Badge>
+                  )}
+                </TableCell>
                 <TableCell className="text-right text-sm">
                   {claim.days_in_ar > 0 ? (
                     <span className={cn(claim.days_in_ar > 45 ? "font-semibold text-destructive" : claim.days_in_ar > 30 ? "text-warning" : "text-foreground")}>
