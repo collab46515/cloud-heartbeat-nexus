@@ -9,6 +9,10 @@ import Index from "./pages/Index";
 import Claims from "./pages/Claims";
 import Denials from "./pages/Denials";
 import Analytics from "./pages/Analytics";
+import Patients from "./pages/Patients";
+import Batches from "./pages/Batches";
+import Scrubbing from "./pages/Scrubbing";
+import RTA from "./pages/RTA";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -25,6 +29,10 @@ const App = () => (
           <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route path="/" element={<Index />} />
             <Route path="/claims" element={<Claims />} />
+            <Route path="/patients" element={<Patients />} />
+            <Route path="/scrubbing" element={<Scrubbing />} />
+            <Route path="/batches" element={<Batches />} />
+            <Route path="/rta" element={<RTA />} />
             <Route path="/denials" element={<Denials />} />
             <Route path="/analytics" element={<Analytics />} />
           </Route>
