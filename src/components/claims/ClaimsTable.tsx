@@ -7,9 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { formatCurrency, formatClaimStatus, getClaimStatusColor } from "@/data/mock-claims";
 import { useClaims, usePayers, type ClaimWithRelations } from "@/hooks/useClaims";
-import { Search, Filter, Eye, Loader2, Brain } from "lucide-react";
+import { useRunScrub } from "@/hooks/useScrubbing";
+import { Search, Filter, Eye, Loader2, Brain, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ClaimDetailPanel } from "./ClaimDetailPanel";
+import { toast } from "sonner";
 
 export function ClaimsTable() {
   const [search, setSearch] = useState("");
@@ -19,6 +21,17 @@ export function ClaimsTable() {
 
   const { data: claims = [], isLoading } = useClaims({ status: statusFilter, payer_id: payerFilter, search });
   const { data: payers = [] } = usePayers();
+  const runScrub = useRunScrub();
+
+  const handleRunScrub = async (e: React.MouseEvent, claimId: string) => {
+    e.stopPropagation();
+    try {
+      const result = await runScrub.mutateAsync(claimId);
+      toast.success(`Scrub: ${result.scrub_status} (${result.total_findings} findings, ${result.errors} errors)`);
+    } catch (err: any) {
+      toast.error(err.message || "Scrub failed");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -74,9 +87,10 @@ export function ClaimsTable() {
               <TableHead className="text-right">Charges</TableHead>
               <TableHead className="text-right">Paid</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Scrub</TableHead>
               <TableHead>AI Risk</TableHead>
               <TableHead className="text-right">Days A/R</TableHead>
-              <TableHead className="w-10"></TableHead>
+              <TableHead className="w-20"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -93,6 +107,16 @@ export function ClaimsTable() {
                 <TableCell>
                   <Badge variant="outline" className={cn("text-[11px] font-semibold border", getClaimStatusColor(claim.claim_status))}>
                     {formatClaimStatus(claim.claim_status)}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline" className={cn("text-[10px] border capitalize",
+                    (claim as any).scrub_status === "passed" ? "bg-success/15 text-success border-success/30" :
+                    (claim as any).scrub_status === "failed" ? "bg-destructive/15 text-destructive border-destructive/30" :
+                    (claim as any).scrub_status === "warnings" ? "bg-warning/15 text-warning border-warning/30" :
+                    (claim as any).scrub_status === "running" ? "bg-info/15 text-info border-info/30" : ""
+                  )}>
+                    {(claim as any).scrub_status || "pending"}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -115,15 +139,20 @@ export function ClaimsTable() {
                   ) : "—"}
                 </TableCell>
                 <TableCell>
-                  <Button variant="ghost" size="icon" className="h-7 w-7">
-                    <Eye className="h-3.5 w-3.5" />
-                  </Button>
+                  <div className="flex items-center gap-1">
+                    <Button variant="ghost" size="icon" className="h-7 w-7" title="Run Scrub" onClick={(e) => handleRunScrub(e, claim.id)} disabled={runScrub.isPending}>
+                      <Shield className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7">
+                      <Eye className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
             {claims.length === 0 && (
               <TableRow>
-                <TableCell colSpan={10} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={11} className="h-24 text-center text-muted-foreground">
                   No claims found. Seed data or create your first claim.
                 </TableCell>
               </TableRow>

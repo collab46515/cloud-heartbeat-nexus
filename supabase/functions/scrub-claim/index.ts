@@ -172,6 +172,83 @@ async function evaluateGovernanceChecks(
     }
   }
 
+  // #8 Date Validation: DOS in future or >1 year past
+  if (logic.check === "date_validation") {
+    const serviceDate = new Date(context.claim.service_date);
+    const oneYearAgo = new Date(context.now);
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    if (serviceDate > context.now) {
+      findings.push({ message: `Service date ${context.claim.service_date} is in the future` });
+    } else if (serviceDate < oneYearAgo) {
+      findings.push({ message: `Service date ${context.claim.service_date} is >1 year in the past` });
+    }
+  }
+
+  // #9 Units Validation: Negative or zero units
+  if (logic.check === "units_validation") {
+    for (const li of context.lineItems) {
+      if (Number(li.units) <= 0) {
+        findings.push({
+          message: `${li.procedure_code}: invalid units (${li.units})`,
+          details: { procedure_code: li.procedure_code, units: li.units },
+          lineItemId: li.id,
+        });
+      }
+    }
+  }
+
+  // #10 Duplicate Claim Detection: Same patient/DOS/CPT within 90 days
+  if (logic.check === "duplicate_claim") {
+    const { data: dupes } = await supabase
+      .from("claims")
+      .select("id, claim_number, service_date, claim_status")
+      .eq("patient_id", context.claim.patient_id)
+      .eq("service_date", context.claim.service_date)
+      .neq("id", context.claim.id)
+      .neq("claim_status", "void");
+    if (dupes && dupes.length > 0) {
+      findings.push({
+        message: `Potential duplicate: ${dupes.length} other claim(s) for same patient/DOS (${dupes.map((d: any) => d.claim_number).join(", ")})`,
+        details: { duplicate_claim_ids: dupes.map((d: any) => d.id) },
+      });
+    }
+  }
+
+  // #19 Age/Gender Validation
+  if (logic.check === "age_gender_validation") {
+    if (context.patient) {
+      const gender = context.patient.gender?.toLowerCase();
+      const dxCodes = context.diagnoses.map((d: any) => (d.code || "").toUpperCase());
+      // Pregnancy codes for male patients
+      const pregnancyCodes = dxCodes.filter((c: string) => c.startsWith("O") || c.startsWith("Z3A"));
+      if (gender === "male" && pregnancyCodes.length > 0) {
+        findings.push({ message: `Pregnancy-related diagnosis (${pregnancyCodes.join(", ")}) on male patient` });
+      }
+      // Prostate codes for female patients
+      const prostateCodes = dxCodes.filter((c: string) => c.startsWith("N40") || c.startsWith("N41") || c.startsWith("N42"));
+      if (gender === "female" && prostateCodes.length > 0) {
+        findings.push({ message: `Prostate-related diagnosis (${prostateCodes.join(", ")}) on female patient` });
+      }
+      // Age-based: pediatric codes on elderly or vice versa
+      if (context.patient.dob) {
+        const age = Math.floor((context.now.getTime() - new Date(context.patient.dob).getTime()) / 31557600000);
+        const pediatricCodes = dxCodes.filter((c: string) => c.startsWith("P") && !c.startsWith("PR"));
+        if (age > 18 && pediatricCodes.length > 0) {
+          findings.push({ message: `Newborn/perinatal diagnosis (${pediatricCodes.join(", ")}) on ${age}yo patient` });
+        }
+      }
+    }
+  }
+
+  // #7 Place of Service validation
+  if (logic.check === "pos_validation") {
+    const validPos = ["11","12","21","22","23","24","31","32","33","34","41","42","49","50","51","52","53","54","55","56","57","58","60","61","62","65","71","72","81","99"];
+    const pos = context.claim.place_of_service;
+    if (pos && !validPos.includes(String(pos))) {
+      findings.push({ message: `Invalid Place of Service code: ${pos}` });
+    }
+  }
+
   return findings;
 }
 

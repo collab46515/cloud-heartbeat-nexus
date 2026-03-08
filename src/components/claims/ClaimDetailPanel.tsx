@@ -10,7 +10,9 @@ import { Brain, Zap, AlertTriangle, CheckCircle, Loader2, Shield, FileCode } fro
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatClaimStatus, getClaimStatusColor } from "@/data/mock-claims";
 import { useAIPrediction, useCodingSuggestions, type DenialPrediction, type CodingResult } from "@/hooks/useAIPrediction";
+import { useRunScrub } from "@/hooks/useScrubbing";
 import type { ClaimWithRelations } from "@/hooks/useClaims";
+import { toast } from "sonner";
 
 interface ClaimDetailPanelProps {
   claim: ClaimWithRelations;
@@ -50,7 +52,17 @@ function RiskGauge({ probability }: { probability: number }) {
 export function ClaimDetailPanel({ claim, onClose }: ClaimDetailPanelProps) {
   const { predictDenial, prediction, loading: predicting } = useAIPrediction();
   const { getSuggestions, result: codingResult, loading: coding } = useCodingSuggestions();
+  const runScrub = useRunScrub();
   const [clinicalText, setClinicalText] = useState("");
+
+  const handleRunScrub = async () => {
+    try {
+      const result = await runScrub.mutateAsync(claim.id);
+      toast.success(`Scrub: ${result.scrub_status} (${result.total_findings} findings)`);
+    } catch (err: any) {
+      toast.error(err.message || "Scrub failed");
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -110,6 +122,10 @@ export function ClaimDetailPanel({ claim, onClose }: ClaimDetailPanelProps) {
             <Button onClick={() => predictDenial(claim.id)} disabled={predicting} size="sm" className="gap-1">
               {predicting ? <Loader2 className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
               {predicting ? "Analyzing…" : "Run Denial Prediction"}
+            </Button>
+            <Button onClick={handleRunScrub} disabled={runScrub.isPending} size="sm" variant="outline" className="gap-1">
+              {runScrub.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Shield className="h-3 w-3" />}
+              {runScrub.isPending ? "Scrubbing…" : "Run Scrub"}
             </Button>
           </div>
 
