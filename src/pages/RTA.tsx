@@ -6,12 +6,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRTAConfig, useRTATransactions, useSubmitRTA } from "@/hooks/useRTA";
+import { useRTAPrediction, type RTAPrediction } from "@/hooks/useRTAPrediction";
 import { useClaims } from "@/hooks/useClaims";
 import { formatCurrency } from "@/data/mock-claims";
 import { cn } from "@/lib/utils";
-import { Zap, Loader2, CheckCircle, XCircle, Clock, Wifi, WifiOff, Send } from "lucide-react";
+import { Zap, Loader2, CheckCircle, XCircle, Clock, Wifi, WifiOff, Send, Brain, ArrowRight, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 
 const statusColors: Record<string, string> = {
   approved: "bg-success/15 text-success border-success/30",
@@ -192,17 +194,124 @@ export default function RTA() {
   );
 }
 
+function RTAPredictionPanel({ prediction }: { prediction: RTAPrediction }) {
+  const approvalPct = Math.round(prediction.expected_approval_probability * 100);
+  const barColor = approvalPct > 80 ? "bg-success" : approvalPct > 50 ? "bg-warning" : "bg-destructive";
+
+  return (
+    <div className="space-y-3 rounded-lg border bg-card p-4">
+      <div className="flex items-center gap-2">
+        <Brain className="h-4 w-4 text-primary" />
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">AI Routing Recommendation</span>
+        {prediction.latency_ms && (
+          <span className="ml-auto text-[10px] text-muted-foreground">{prediction.latency_ms}ms</span>
+        )}
+      </div>
+
+      {/* Recommendation */}
+      <div className={cn("rounded-md border p-3", prediction.rta_recommended ? "border-success/30 bg-success/5" : "border-warning/30 bg-warning/5")}>
+        <div className="flex items-center gap-2">
+          {prediction.rta_recommended ? (
+            <CheckCircle className="h-4 w-4 text-success" />
+          ) : (
+            <Clock className="h-4 w-4 text-warning" />
+          )}
+          <span className="text-sm font-bold text-foreground">
+            {prediction.rta_recommended ? "REAL-TIME ADJUDICATION RECOMMENDED" : "BATCH SUBMISSION RECOMMENDED"}
+          </span>
+        </div>
+        <p className="mt-1 text-xs text-muted-foreground">{prediction.recommendation_reason}</p>
+      </div>
+
+      {/* Approval probability */}
+      <div className="space-y-1">
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-muted-foreground">Expected RTA Approval</span>
+          <span className="font-bold">{approvalPct}%</span>
+        </div>
+        <div className="h-2.5 w-full rounded-full bg-muted">
+          <div className={cn("h-2.5 rounded-full transition-all duration-700", barColor)} style={{ width: `${approvalPct}%` }} />
+        </div>
+        <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+          <span>Confidence: {Math.round(prediction.confidence * 100)}%</span>
+          {prediction.expected_response_time_ms && (
+            <span>Est. response: {prediction.expected_response_time_ms}ms</span>
+          )}
+        </div>
+      </div>
+
+      {/* Payment breakdown */}
+      {(prediction.expected_plan_pays || prediction.expected_patient_responsibility) && (
+        <div className="grid grid-cols-3 gap-2">
+          {prediction.expected_allowed_amount && (
+            <div className="rounded-md border p-2 text-center">
+              <p className="text-[10px] text-muted-foreground">Allowed</p>
+              <p className="text-sm font-bold">{formatCurrency(prediction.expected_allowed_amount)}</p>
+            </div>
+          )}
+          {prediction.expected_plan_pays && (
+            <div className="rounded-md border border-success/20 bg-success/5 p-2 text-center">
+              <p className="text-[10px] text-muted-foreground">Plan Pays</p>
+              <p className="text-sm font-bold text-success">{formatCurrency(prediction.expected_plan_pays)}</p>
+            </div>
+          )}
+          {prediction.expected_patient_responsibility && (
+            <div className="rounded-md border p-2 text-center">
+              <p className="text-[10px] text-muted-foreground">Patient Resp</p>
+              <p className="text-sm font-bold">{formatCurrency(prediction.expected_patient_responsibility)}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Risk factors */}
+      {prediction.risk_factors?.length > 0 && (
+        <div className="space-y-1.5">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Routing Factors</p>
+          {prediction.risk_factors.map((rf, i) => (
+            <div key={i} className="flex items-start gap-2 text-xs">
+              {rf.impact === "positive" ? (
+                <TrendingUp className="mt-0.5 h-3 w-3 shrink-0 text-success" />
+              ) : rf.impact === "negative" ? (
+                <TrendingDown className="mt-0.5 h-3 w-3 shrink-0 text-destructive" />
+              ) : (
+                <Minus className="mt-0.5 h-3 w-3 shrink-0 text-muted-foreground" />
+              )}
+              <div>
+                <span className="font-medium text-foreground">{rf.factor}: </span>
+                <span className="text-muted-foreground">{rf.description}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Batch comparison */}
+      <div className="rounded-md border border-dashed p-2">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">vs. Batch Submission</p>
+        <div className="flex items-center gap-4 text-xs">
+          <span className="text-muted-foreground">Payment in <span className="font-bold text-foreground">{prediction.batch_comparison.expected_days_to_payment} days</span></span>
+          <span className="text-muted-foreground">Approval rate: <span className="font-bold text-foreground">{Math.round(prediction.batch_comparison.expected_approval_rate * 100)}%</span></span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function RTASubmitDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [selectedClaimId, setSelectedClaimId] = useState("");
   const { data: allClaims = [] } = useClaims();
   const eligibleClaims = allClaims.filter(c => ["draft", "scrubbing", "submitted", "pending"].includes(c.claim_status));
   const submitRTA = useSubmitRTA();
+  const { predict, prediction, loading: predicting } = useRTAPrediction();
+
+  const handleClaimSelect = (claimId: string) => {
+    setSelectedClaimId(claimId);
+    if (claimId) predict(claimId);
+  };
 
   const handleSubmit = async () => {
-    if (!selectedClaimId) {
-      toast.error("Select a claim");
-      return;
-    }
+    if (!selectedClaimId) { toast.error("Select a claim"); return; }
     try {
       const result = await submitRTA.mutateAsync(selectedClaimId);
       if (result.response_status === "approved") {
@@ -221,15 +330,15 @@ function RTASubmitDialog({ open, onClose }: { open: boolean; onClose: () => void
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2"><Zap className="h-5 w-5 text-warning" /> Submit for Real-Time Adjudication</DialogTitle>
-          <DialogDescription>Select a claim to submit for instant payer adjudication.</DialogDescription>
+          <DialogDescription>Select a claim — AI will analyze RTA readiness before submission.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4 pt-2">
           <div className="space-y-2">
             <label className="text-xs font-medium text-muted-foreground">Select Claim</label>
-            <Select value={selectedClaimId} onValueChange={setSelectedClaimId}>
+            <Select value={selectedClaimId} onValueChange={handleClaimSelect}>
               <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Choose a claim…" /></SelectTrigger>
               <SelectContent>
                 {eligibleClaims.map((c) => (
@@ -250,21 +359,33 @@ function RTASubmitDialog({ open, onClose }: { open: boolean; onClose: () => void
                   <span className="text-muted-foreground">Total Charge:</span>
                   <span className="font-mono font-bold">{formatCurrency(Number(selectedClaim.total_charge_amount))}</span>
                 </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground">Service Date:</span>
-                  <span>{selectedClaim.service_date}</span>
-                </div>
               </CardContent>
             </Card>
           )}
 
-          <Button onClick={handleSubmit} disabled={submitRTA.isPending || !selectedClaimId} className="w-full gap-1">
-            {submitRTA.isPending ? (
-              <><Loader2 className="h-3 w-3 animate-spin" /> Processing…</>
-            ) : (
-              <><Send className="h-3 w-3" /> Submit for RTA</>
+          {/* AI Prediction */}
+          {predicting && (
+            <div className="flex items-center justify-center gap-2 py-4 text-xs text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" /> Analyzing RTA readiness…
+            </div>
+          )}
+
+          {prediction && !predicting && <RTAPredictionPanel prediction={prediction} />}
+
+          <div className="flex gap-2">
+            <Button onClick={handleSubmit} disabled={submitRTA.isPending || !selectedClaimId} className="flex-1 gap-1">
+              {submitRTA.isPending ? (
+                <><Loader2 className="h-3 w-3 animate-spin" /> Processing…</>
+              ) : (
+                <><Zap className="h-3 w-3" /> Submit Real-Time</>
+              )}
+            </Button>
+            {prediction && !prediction.rta_recommended && (
+              <Button variant="outline" onClick={onClose} className="gap-1">
+                <Clock className="h-3 w-3" /> Use Batch Instead
+              </Button>
             )}
-          </Button>
+          </div>
 
           <p className="text-[10px] text-muted-foreground text-center">
             Expected response time: &lt; 3 seconds · Timeout falls back to batch submission
